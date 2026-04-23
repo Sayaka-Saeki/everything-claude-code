@@ -39,7 +39,9 @@ export class AppError extends Error {
   ) {
     super(message)
     this.name = this.constructor.name
-    // Maintain correct prototype chain in transpiled JS
+    // Maintain correct prototype chain in transpiled ES5 JavaScript.
+    // Required for `instanceof` checks (e.g., `error instanceof NotFoundError`)
+    // to work correctly when extending the built-in Error class.
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }

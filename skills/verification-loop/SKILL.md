@@ -66,19 +66,20 @@ Report:
 ### Phase 5: Security Scan
 ```bash
 # Check for dependency vulnerabilities
-npm audit --audit-level=high 2>&1 | tail -20
+npm audit --audit-level=high 2>&1
 # OR for other package managers:
 # pnpm audit --audit-level high
 # yarn npm audit
 
 # Check for hardcoded secrets (common patterns)
+# Note: review matches manually — test files may produce false positives
 grep -rn --include="*.ts" --include="*.js" --include="*.tsx" \
   -e 'sk-[a-zA-Z0-9]' \
   -e 'api_key\s*=' \
   -e 'API_KEY\s*=' \
   -e 'password\s*=\s*["'"'"']' \
   -e 'secret\s*=\s*["'"'"']' \
-  . 2>/dev/null | grep -v 'node_modules' | head -20
+  . 2>/dev/null | grep -v 'node_modules' | grep -v '\.test\.' | grep -v '__tests__' | head -20
 
 # Check for leftover debug statements
 grep -rn "console.log" --include="*.ts" --include="*.tsx" src/ 2>/dev/null | head -10
